@@ -2,7 +2,7 @@
 
 ## Concept
 
-The goal is to **enable deposited OSMO **in Mars **to be** staked.****
+The goal is to **enable **deposited OSMO **on** Mars to** be** staked.****
 
 Casually describing, `superfluid mars` can be achieved by the following features:
 
