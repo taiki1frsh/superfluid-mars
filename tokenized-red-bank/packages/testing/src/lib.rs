@@ -16,4 +16,4 @@ pub use helpers::*;
 pub use mars_mock_querier::MarsMockQuerier;
 pub use mocks::*;
 
-pub mod integration;
+// pub mod integration;

@@ -1,14 +1,10 @@
 [package]
-name          = "mars-red-bank"
-description   = "A smart contract that manages asset deposit, borrowing, and liquidations"
+name          = "m-token"
+description   = "A smart contract that represents deposited (yield-bearing) token on Mars"
 version       = { workspace = true }
 authors       = { workspace = true }
 edition       = { workspace = true }
 license       = { workspace = true }
-repository    = { workspace = true }
-homepage      = { workspace = true }
-documentation = { workspace = true }
-keywords      = { workspace = true }
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -23,7 +19,7 @@ cosmwasm-std        = { workspace = true }
 cw2                 = { workspace = true }
 cw-storage-plus     = { workspace = true }
 cw-utils            = { workspace = true }
-mars-health         = { workspace = true }
+# mars-health         = { workspace = true }
 mars-owner          = { workspace = true }
 mars-red-bank-types = { workspace = true }
 mars-utils          = { workspace = true }
