@@ -146,4 +146,7 @@ pub enum ContractError {
 
     #[error("Failed to instantiate m token")]
     InstantiateMTokenError {},
+
+    #[error("Not set m token contract")]
+    MTOKEN_CONTRACT_NOT_SET{},
 }

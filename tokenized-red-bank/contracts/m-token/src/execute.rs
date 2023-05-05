@@ -32,10 +32,11 @@ pub fn transfer(
     amount: Uint128,
 ) -> Result<Response, ContractError> {
 
-
     // return after the execute_transfe call
     Ok(execute_transfer(deps, env, info, recipient, amount)?)
 }
+
+// TODO: Insert the validation logic to check if buner address is the owner of Mars.
 
 pub fn burn(
     deps: DepsMut,

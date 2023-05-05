@@ -29,7 +29,7 @@ use crate::{
         get_underlying_debt_amount, get_underlying_liquidity_amount, update_interest_rates,
     },
     state::{
-        COLLATERALS, CONFIG, DEBTS, EMERGENCY_OWNER, MARKETS, OWNER, UNCOLLATERALIZED_LOAN_LIMITS, TEMPORAL_DENOM_IN_REPLY,
+        COLLATERALS, CONFIG, DEBTS, EMERGENCY_OWNER, MARKETS, OWNER, UNCOLLATERALIZED_LOAN_LIMITS, TEMPORAL_DENOM_IN_REPLY, COLLATERAL_MTOKENS_ADDR,
     },
     user::User,
     contract::{INSTANTIATE_M_TOKEN_REPLY_ID},
@@ -425,7 +425,7 @@ pub fn deposit(
     deposit_amount: Uint128,
 ) -> Result<Response, ContractError> {
     let user_addr: Addr;
-    let user = if let Some(address) = on_behalf_of {
+    let user = if let Some(address) = on_behalf_of.clone() {
         user_addr = deps.api.addr_validate(&address)?;
         User(&user_addr)
     } else {
@@ -489,6 +489,20 @@ pub fn deposit(
     // TODO: Mint mToken of the corresponding token to the deposited asset to depositor
     // NOTE: mToken is the representive of the right of the redeem of the collateral.
     // Be careful to transfar, trade and so on.
+    let m_token_contract_addr = COLLATERAL_MTOKENS_ADDR.may_load(deps.storage, &denom)?.ok_or_else(|| {
+        ContractError::MTOKEN_CONTRACT_NOT_SET {};
+    });
+
+    let mint_mtoken_msgs = vec![
+        WasmMsg::Execute { 
+            contract_addr: m_token_contract_addr.unwrap().to_string(),
+            msg: to_binary(&m_token::msg::ExecuteMsg::Mint { 
+                recipient: on_behalf_of.unwrap_or(info.sender.to_string()),
+                amount: deposit_amount, 
+            })?,
+            funds: vec![],
+        }
+    ];
 
     // TODO: Eliminate the collateral to depositor handling for the deposit
     // Cover collateral and debt management by treating **mToken**.
@@ -496,6 +510,7 @@ pub fn deposit(
     MARKETS.save(deps.storage, &denom, &market)?;
 
     Ok(response
+        .add_messages(mint_mtoken_msgs)
         .add_attribute("action", "deposit")
         .add_attribute("sender", &info.sender)
         .add_attribute("on_behalf_of", user)
