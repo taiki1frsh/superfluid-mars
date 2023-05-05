@@ -1,4 +1,4 @@
-# Superfluid Mars
+# Osmosis Superfluid Staking **on Mars**
 
 ## Concept
 
