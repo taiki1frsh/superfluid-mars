@@ -33,6 +33,8 @@ pub enum ExecuteMsg {
         denom: String,
         /// Asset parameters
         params: InitOrUpdateAssetParams,
+        /// Code ID of the mToken contract
+        mtoken_code_id: u64,
     },
 
     /// Update an asset on the money market (only owner can call)

@@ -140,4 +140,10 @@ pub enum ContractError {
 
     #[error("Cannot repay uncollateralized loan on behalf of another user")]
     CannotRepayUncollateralizedLoanOnBehalfOf {},
+
+    #[error("Uknown reply id: {id}")]
+    UnknownReplyId { id: u64 },
+
+    #[error("Failed to instantiate m token")]
+    InstantiateMTokenError {},
 }

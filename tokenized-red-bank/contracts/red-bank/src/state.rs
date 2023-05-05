@@ -10,3 +10,8 @@ pub const MARKETS: Map<&str, Market> = Map::new("markets");
 pub const COLLATERALS: Map<(&Addr, &str), Collateral> = Map::new("collaterals");
 pub const DEBTS: Map<(&Addr, &str), Debt> = Map::new("debts");
 pub const UNCOLLATERALIZED_LOAN_LIMITS: Map<(&Addr, &str), Uint128> = Map::new("limits");
+
+// TODO: Need data structure for the relation between the collateral tokens and the corresponding 
+// mToken addresses.
+pub const COLLATERAL_MTOKENS_ADDR: Map<&str, Addr> = Map::new("collateral_mtokens");
+pub const TEMPORAL_DENOM_IN_REPLY: Item<String> = Item::new("temporal_denom_in_reply");

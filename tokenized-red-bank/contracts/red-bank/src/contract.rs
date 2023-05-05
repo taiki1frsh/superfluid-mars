@@ -1,7 +1,10 @@
-use cosmwasm_std::{entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response};
+use cosmwasm_std::{entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, Reply};
+use cw_utils::parse_reply_instantiate_data;
 use mars_red_bank_types::red_bank::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
-use crate::{error::ContractError, execute, query};
+use crate::{error::ContractError, execute, query, state::{TEMPORAL_DENOM_IN_REPLY, COLLATERAL_MTOKENS_ADDR}};
+
+pub const INSTANTIATE_M_TOKEN_REPLY_ID: u64 = 0;
 
 #[entry_point]
 pub fn instantiate(
@@ -31,7 +34,8 @@ pub fn execute(
         ExecuteMsg::InitAsset {
             denom,
             params,
-        } => execute::init_asset(deps, env, info, denom, params),
+            mtoken_code_id,
+        } => execute::init_asset(deps, env, info, denom, params, mtoken_code_id),
         ExecuteMsg::UpdateAsset {
             denom,
             params,
@@ -88,6 +92,27 @@ pub fn execute(
             denom,
             enable,
         } => execute::update_asset_collateral_status(deps, env, info, denom, enable),
+    }
+}
+
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response, ContractError> {
+    if msg.id != INSTANTIATE_M_TOKEN_REPLY_ID {
+        return Err(ContractError::UnknownReplyId { id: msg.id });
+    };
+    let res = parse_reply_instantiate_data(msg);
+    match res {
+        Ok(res) => {
+            // Validate contract address
+            let cw20_addr = deps.api.addr_validate(&res.contract_address)?;
+
+            // Save m token
+            let denom_of_collteral = TEMPORAL_DENOM_IN_REPLY.load(deps.storage)?;
+            COLLATERAL_MTOKENS_ADDR.save(deps.storage, &denom_of_collteral, &cw20_addr)?;
+
+            Ok(Response::new())
+        }
+        Err(_) => Err(ContractError::InstantiateMTokenError {}),
     }
 }
 
