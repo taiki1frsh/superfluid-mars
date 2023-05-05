@@ -15,6 +15,7 @@ doctest = false
 backtraces = ["cosmwasm-std/backtraces"]
 
 [dependencies]
+cosmwasm-schema = { workspace = true }
 cosmwasm-std        = { workspace = true }
 cw2                 = { workspace = true }
 cw-storage-plus     = { workspace = true }
@@ -24,7 +25,10 @@ mars-owner          = { workspace = true }
 mars-red-bank-types = { workspace = true }
 mars-utils          = { workspace = true }
 thiserror           = { workspace = true }
+cw20 =  { workspace = true }
+cw20-base =  { workspace = true }
+schemars            = { workspace = true }
+serde               = { workspace = true }
 
 [dev-dependencies]
-cosmwasm-schema = { workspace = true }
 mars-testing    = { workspace = true }

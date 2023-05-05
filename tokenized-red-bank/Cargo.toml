@@ -43,6 +43,8 @@ prost             = { version = "0.11.5", default-features = false, features = [
 schemars          = "0.8.11"
 serde             = { version = "1.0.152", default-features = false, features = ["derive"] }
 thiserror         = "1.0.38"
+cw20 = "1.0.1"
+cw20-base = "1.0.1"
 
 # packages
 mars-health         = { version = "1.0.0", path = "./packages/health" }
@@ -57,6 +59,7 @@ mars-address-provider          = { version = "1.0.0", path = "./contracts/addres
 mars-oracle-base               = { version = "1.0.0", path = "./contracts/oracle/base" }
 mars-oracle-osmosis            = { version = "1.0.0", path = "./contracts/oracle/osmosis" }
 mars-red-bank                  = { version = "1.0.0", path = "./contracts/red-bank" }
+m-token                  = { version = "1.0.0", path = "./contracts/m-token" }
 # mars-rewards-collector-base    = { version = "1.0.0", path = "./contracts/rewards-collector/base" }
 # mars-rewards-collector-osmosis = { version = "1.0.0", path = "./contracts/rewards-collector/osmosis" }
 

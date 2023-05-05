@@ -289,6 +289,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw20"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "91666da6c7b40c8dd5ff94df655a28114efc10c79b70b4d06f13c31e37d60609"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-utils",
+ "schemars",
+ "serde",
+]
+
+[[package]]
+name = "cw20-base"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "afcd279230b08ed8afd8be5828221622bd5b9ce25d0b01d58bad626c6ce0169c"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cw20",
+ "schemars",
+ "semver",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "der"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -502,10 +533,14 @@ dependencies = [
  "cw-storage-plus",
  "cw-utils",
  "cw2 1.0.1 (git+https://github.com/mars-protocol/cw-plus?rev=4014255)",
+ "cw20",
+ "cw20-base",
  "mars-owner",
  "mars-red-bank-types",
  "mars-testing",
  "mars-utils",
+ "schemars",
+ "serde",
  "thiserror",
 ]
 
@@ -600,6 +635,9 @@ dependencies = [
  "cw-storage-plus",
  "cw-utils",
  "cw2 1.0.1 (git+https://github.com/mars-protocol/cw-plus?rev=4014255)",
+ "cw20",
+ "cw20-base",
+ "m-token",
  "mars-health",
  "mars-owner",
  "mars-red-bank-types",
