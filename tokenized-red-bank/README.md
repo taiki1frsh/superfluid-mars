@@ -1,4 +1,4 @@
-# Forked Mars Protocol with the tokenization of the deposited asset
+# Tokenized Mars Protocol
 
 To enable the deposited OSMO on Mars to be staked via superfluid module, I propose the tokenization of the deposited asset like AToken on Aave.
 
