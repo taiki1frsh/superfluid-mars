@@ -1,8 +1,9 @@
 use std::{cmp::min, str};
 
 use cosmwasm_std::{
-    Addr, Decimal, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128,
+    Addr, Decimal, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, WasmMsg, to_binary, CosmosMsg, SubMsg,
 };
+
 use mars_owner::{OwnerError, OwnerInit::SetInitialOwner, OwnerUpdate};
 use mars_red_bank_types::{
     address_provider::{self, MarsAddressType},
@@ -15,6 +16,7 @@ use mars_utils::{
     helpers::{build_send_asset_msg, option_string_to_addr, validate_native_denom, zero_address},
     math,
 };
+use cw20::{MinterResponse};
 
 use crate::{
     error::ContractError,
@@ -27,10 +29,13 @@ use crate::{
         get_underlying_debt_amount, get_underlying_liquidity_amount, update_interest_rates,
     },
     state::{
-        COLLATERALS, CONFIG, DEBTS, EMERGENCY_OWNER, MARKETS, OWNER, UNCOLLATERALIZED_LOAN_LIMITS,
+        COLLATERALS, CONFIG, DEBTS, EMERGENCY_OWNER, MARKETS, OWNER, UNCOLLATERALIZED_LOAN_LIMITS, TEMPORAL_DENOM_IN_REPLY,
     },
     user::User,
+    contract::{INSTANTIATE_M_TOKEN_REPLY_ID},
 };
+
+// use m_token::{msg::InstantiateMsg as };
 
 pub const CONTRACT_NAME: &str = "crates.io:mars-red-bank";
 pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -134,6 +139,7 @@ pub fn init_asset(
     info: MessageInfo,
     denom: String,
     params: InitOrUpdateAssetParams,
+    mtoken_code_id: u64,
 ) -> Result<Response, ContractError> {
     OWNER.assert_owner(deps.storage, &info.sender)?;
 
@@ -146,7 +152,41 @@ pub fn init_asset(
     let new_market = create_market(env.block.time.seconds(), &denom, params)?;
     MARKETS.save(deps.storage, &denom, &new_market)?;
 
-    Ok(Response::new().add_attribute("action", "init_asset").add_attribute("denom", denom))
+    // TODO: Can insert instantiate msg of m-token here
+    // Combine "mars_collateral_token" string and denom as label
+    let label_of_mtoken = format!("mars_collateral_token_{}", &denom);
+    let name_of_mtoken = format!("Mars_Collateral_Token_{}", &denom);
+    let symbol_of_mtoken = format!("m{}", &denom);
+    let instantiate_m_token_msg = WasmMsg::Instantiate {
+        code_id: mtoken_code_id,
+        funds: vec![],
+        admin: None,
+        label: label_of_mtoken,
+        msg: to_binary(&m_token::msg::InstantiateMsg {
+            name: name_of_mtoken,
+            symbol: symbol_of_mtoken,
+            decimals: 6,
+            initial_balances: vec![],
+            mint: Some(MinterResponse {
+                minter: env.contract.address.into(),
+                cap: None,
+            }),
+            corresponding_token: denom.clone(),
+        })?,
+    };
+
+    let reply_msg = SubMsg::reply_on_success(
+        instantiate_m_token_msg,
+        INSTANTIATE_M_TOKEN_REPLY_ID,
+    );  
+
+    TEMPORAL_DENOM_IN_REPLY.save(deps.storage, &denom)?;
+
+    Ok(Response::new()
+        .add_attribute("action", "init_asset")
+        .add_attribute("denom", denom)
+        .add_submessage(reply_msg)
+    )
 }
 
 /// Initialize new market
@@ -446,6 +486,12 @@ pub fn deposit(
         response,
     )?;
 
+    // TODO: Mint mToken of the corresponding token to the deposited asset to depositor
+    // NOTE: mToken is the representive of the right of the redeem of the collateral.
+    // Be careful to transfar, trade and so on.
+
+    // TODO: Eliminate the collateral to depositor handling for the deposit
+    // Cover collateral and debt management by treating **mToken**.
     market.increase_collateral(deposit_amount_scaled)?;
     MARKETS.save(deps.storage, &denom, &market)?;
 
@@ -467,6 +513,18 @@ pub fn withdraw(
     amount: Option<Uint128>,
     recipient: Option<String>,
 ) -> Result<Response, ContractError> {
+    // TODO: Modify the way of the validation against the msgn.sender's collateral 
+    // amount to be withdrawn.
+    // mToken is the pure representive of the collateral and it doesn't matter who minted originally.
+    // So, the validation should be done by the amount of the mToken owned by the msg.sender.
+
+    // TODO: Check if msg.sender has enough mToken to withdraw.
+    // This is the only validation we have to do ideally.
+
+    // TODO: Burn the proper amount of mToken 
+    // And transfer the collateral to the recipient.
+
+
     let withdrawer = User(&info.sender);
 
     let mut market = MARKETS.load(deps.storage, &denom)?;
@@ -589,6 +647,11 @@ pub fn borrow(
     borrow_amount: Uint128,
     recipient: Option<String>,
 ) -> Result<Response, ContractError> {
+    // TODO: Check the balance of the total mToken of the borrower as the reference of
+    // the total collateral amount.
+    // And, record those mToken amount that are used for the actual collateral 
+    // To avoid the invalid transfer or undercollateralized borrow.
+
     let borrower = User(&info.sender);
 
     // Cannot borrow zero amount
@@ -704,6 +767,8 @@ pub fn repay(
     denom: String,
     repay_amount: Uint128,
 ) -> Result<Response, ContractError> {
+    // TODO: Release of the implicitly locked mTokens as the collateral
+
     let user_addr: Addr;
     let user = if let Some(address) = on_behalf_of {
         user_addr = deps.api.addr_validate(&address)?;
@@ -792,6 +857,12 @@ pub fn liquidate(
     sent_debt_amount: Uint128,
     recipient: Option<String>,
 ) -> Result<Response, ContractError> {
+    // TODO: The return of the liquidation as a reward must be managed being used mTokens.
+    // Maybe we should use the specific msg for this very type of the transfer.
+    // The points that should be considered are 
+    // - how to treat allowance of the mToken
+    // - the best stream of the transition of the value
+
     let block_time = env.block.time.seconds();
     let user = User(&user_addr);
     // The recipient address for receiving underlying collateral
