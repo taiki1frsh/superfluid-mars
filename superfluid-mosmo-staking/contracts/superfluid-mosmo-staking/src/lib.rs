@@ -4,3 +4,4 @@ pub mod state;
 pub mod execute;
 pub mod query;
 pub mod error;
+pub mod adapter;
