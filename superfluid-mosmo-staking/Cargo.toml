@@ -1,0 +1,50 @@
+[workspace]
+members = [
+  "contracts/superfluid-mosmo-staking",
+]
+
+[workspace.package]
+version       = "1.0.0"
+authors       = [
+  "Taiki.F <taiki.furusho@gmail.com>",
+]
+edition       = "2021"
+license       = "GPL-3.0-or-later"
+
+[workspace.dependencies]
+anyhow            = "1.0.68"
+bech32            = "0.9.1"
+cosmwasm-schema   = "1.1.9"
+cosmwasm-std      = "1.1.9"
+cw2               = { git = "https://github.com/mars-protocol/cw-plus", rev = "4014255" }
+cw-multi-test     = "0.16.1"
+cw-storage-plus   = "1.0.1"
+cw-utils          = "1.0.1"
+mars-owner        = "1.0.0"
+osmosis-std       = "0.15.2"
+osmosis-test-tube = "15.1.0"
+prost             = { version = "0.11.5", default-features = false, features = ["prost-derive"] }
+schemars          = "0.8.11"
+serde             = { version = "1.0.152", default-features = false, features = ["derive"] }
+thiserror         = "1.0.38"
+cw20 = "1.0.1"
+cw20-base = "1.0.1"
+
+# mars-osmosis        = { version = "1.0.0", path = "./packages/chains/osmosis" }
+mars-red-bank-types = "1.0.0"
+mars-params = "1.0.1"
+mars-utils = "1.0.0"
+
+mars-core = "1.0.0"
+m-token                  = { version = "1.0.0", path = "../tokenized-red-bank/contracts/m-token" }
+
+[profile.release]
+codegen-units    = 1
+debug            = false
+debug-assertions = false
+incremental      = false
+lto              = true
+overflow-checks  = true
+opt-level        = 3
+panic            = "abort"
+rpath            = false
