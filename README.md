@@ -38,35 +38,47 @@ Casually describing, I believe `superfluid mars` can be achieved by the followin
 
 4. A Superfluid staking module for generic use cases of bond tokens.
 
-- Keep the basic functionality the same as the existing LP token-based Superfluid staking
+- Keep the basic functionality the same as the existing LP share token-based Superfluid staking
 - Possibly, design the module so that it can support the other bond tokens from Mars
 
 ### Bonding
 
-LP Share TokenによるSuperfluid Stakingと違い、mOsmoの価値は常にOSMOと1:1であるため、ユーザーが指定するmOSMOのBonding Amountと、実際にSuperfluidモジュールを通してBondingされるOSMOの量は同じである。mOSMOのロックアップは、`superfluid-mosmo-staking` contractによって、そのコントラクトアドレス上で行われる。
-ユーザーによるValidatorの指定は今回の実装では行わないが、現x/superfluidモジュールとの統合を行う上で、Intermediary accountによるManagementで対応することに大きな障壁はないと考えられる。
-
+Unlike Superfluid Staking with LP Share Tokens, the value of mOSMO is always 1:1 with OSMO, so the Bonding Amount of mOSMO specified by the user and the amount of OSMO actually bonded through the Superfluid module are the same. The lockup of mOSMO is controlled by the `superfluid-mosmo-staking` contract. While user-specified Validators are not implemented in this case, it is believed that there would be no significant barriers to addressing this through the management of an intermediary account when integrating with the current x/superfluid module.
 
 ### Unbonding
 
+Users can essentially exit at any time by executing the Unbond Msg. When the Unbond Msg is executed, the lockup period for unbonding defined by Osmosis is naturally required. Once that period has ended and it can be confirmed, users will be able to move their mOSMO freely through the Claim Msg (tentative).
+
+### Slashing
+
+One of the most complex aspects to consider when staking is slashing. There are several possible ways to execute slashing in Superfluid Staking for collateral tokens in the lending market. However, it is essential to perform the calculation of the amount to be slashed through a common module.
+
+1. Specify the Red-Bank contract address that holds the $OSMO to be burned in advance, and execute the burn for that address during slashing. Additionally, for burning mOSMO, execute a Msg that forcibly burns the necessary amount from the superfluid-mosmo module. In this case, the basic logic is performed entirely within the module.
+1. Detect slashing and control both by triggering a slashing Msg through the contract. Perform calculations similar to those in the x/slashing module to determine the slashing amount, and execute slashing by transferring the corresponding total slashing amount of $OSMO from a predetermined slashing insurance pool held by Mars Protocol to the Community Pool. If the amount is insufficient, the remaining slashing will not be performed.
+
+etc...
+
+Inherently, due to the nature of Superfluid, there is no strong necessity to be strict against slashing. Considering this, it is reasonable to incorporate a flexible design.
+
+In this instance, although we will not be implementing the actual system, we will be mindful of peripheral design that envisions the first policy.
+
 ### Rebalance
 
-- もし、Utilization Rateから算出される最大Staking可能量を超えた場合、Share割合に応じて、 Staking量を減らす必要がある。　　　
-- だが、報酬の分配比率は保持できるから、大した問題にはならないか？
+If the maximum staking amount calculated from the Utilization Rate is exceeded, it will be necessary to reduce the staking amount according to the share ratio. This occurs on an epoch-by-epoch basis. Rebalancing is assumed to take place in two stages.
+
+In the first stage, additional staking is no longer allowed. Then, if the allowable Utilization Rate increases by a few more percentage points, the actual staking amount for each account that is already staking is reduced according to their respective shares. This is done by triggering a Rebalance Msg implemented in the x/superfluid-mosmo module by the contract, and the actual processing takes place within that msg.
 
 #### Claim the staking reward
 
-- 各Superfluid mOsmo参加者のmOSMOロック残高に応じて、報酬の分配割合を決定する。
-- これはContractで行う必要がある。　　
-- DelegatingしているValidstorごとに報酬の量は異なるため、それぞれの報酬に応じた割合を決定する必要がある。
+- Determine the reward distribution ratio according to the locked mOSMO balance of each Superfluid mOsmo participant.
+- This needs to be done by the contract.
+- Since the amount of rewards varies for each delegating validator, it is necessary to determine the ratio according to each reward amount.
 
 ## Technical Design
 
 ### Tokenized Red-Bank
 
-未使用のOSMO担保をSuperfluidを通してStakingすることを可能にするために、まずLending機能のTokenizationを提案したい。
-これはAave, Compoundなどの先行事例があることから想像しやすいと思うが、単純に言えば担保の量を表す合成トークンの発行、さらに債務を表す合成トークンの発行により、金利、貸し借りの状態を全てそれらのトークンを通して表現しようというものである。
-今回の実装では、特にSuperfluid Stakingと関連する、担保のトークンのみの実装を考える。（もちろん、債務トークンとの兼ね合いは考えているが、今回の実装では割愛する。）
+To enable the staking of unused OSMO collateral through Superfluid, I would like to first propose the tokenization of the lending functionality. This can be easily imagined with the precedents set by Aave, Compound, and others. In simple terms, it involves the issuance of synthetic tokens representing collateral amounts and synthetic tokens representing debt, in order to express interest rates and borrowing conditions through these tokens. In this implementation, we will consider only the implementation of collateral tokens, which are particularly related to Superfluid Staking (though we are aware of the interactions with debt tokens, they will not be implemented in this case).
 
 ### mToken
 
@@ -84,6 +96,10 @@ Its features include:
 - mToken can be basically transferred freely, and can also be controlled by contracts through Allowance as normal CW20
 
 ### Superfluid mOSMO Module
+
+TODO: fill up here
+
+RebalanceMsg
 
 ### Superfluid mOSMO Contract
 
