@@ -30,3 +30,6 @@ cw20-base =  { workspace = true }
 schemars            = { workspace = true }
 serde               = { workspace = true }
 m-token = {workspace=true}
+# mars-core = {workspace=true}
+mars-red-bank = {workspace=true}
+superfluid-mosmo-staking-std = {workspace=true}

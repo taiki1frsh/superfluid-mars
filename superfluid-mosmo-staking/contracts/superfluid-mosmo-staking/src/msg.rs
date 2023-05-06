@@ -1,6 +1,7 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{Decimal, Uint128, Coin, Addr};
 use mars_owner::OwnerUpdate;
+use crate::adapter::red_bank::RedBankUnchecked;
 
 #[cw_serde]
 pub struct InstantiateMsg {
@@ -8,6 +9,8 @@ pub struct InstantiateMsg {
     pub owner: String,
     // mOsmo cw20 contract address
     pub mosmo_token: String,
+    /// The Mars Protocol money market contract
+    pub red_bank: RedBankUnchecked,
     // The ratio that decides how much the unused collateral can be staked
     pub staking_collateral_ratio: u8,
 }
@@ -23,7 +26,7 @@ pub enum ExecuteMsg {
     /// Claim is used to claim your native tokens that you previously "unbonded"
     /// after the chain-defined waiting period (eg. 3 weeks)
     Claim {},
-    
+
     // Reinvest will check for all accumulated rewards, withdraw them, and
     // re-bond them to the same validator. Anyone can call this, which updates
     // the value of the token (how much under custody).

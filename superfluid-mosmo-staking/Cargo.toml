@@ -31,13 +31,15 @@ cw20 = "1.0.1"
 cw20-base = "1.0.1"
 
 # mars-osmosis        = { version = "1.0.0", path = "./packages/chains/osmosis" }
-mars-red-bank-types = "1.0.0"
+mars-red-bank-types = { version = "1.0.0", path = "../tokenized-red-bank/packages/types" }
 mars-params = "1.0.1"
-mars-utils = "1.0.0"
+mars-utils = { version = "1.0.0", path = "../tokenized-red-bank/packages/utils" }
 
-mars-core = "1.0.0"
+# mars-core = "1.0.0"
 m-token                  = { version = "1.0.0", path = "../tokenized-red-bank/contracts/m-token" }
+mars-red-bank = {version = "1.0.0", path = "../tokenized-red-bank/contracts/red-bank"}
 
+superfluid-mosmo-staking-std = { version = "0.15.2", path = "../custom-osmosis-rust/packages/osmosis-std/" }
 [profile.release]
 codegen-units    = 1
 debug            = false

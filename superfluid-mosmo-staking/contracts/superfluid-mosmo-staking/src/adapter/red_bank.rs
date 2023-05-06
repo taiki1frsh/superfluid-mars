@@ -1,10 +1,11 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
     to_binary, Addr, Api, QuerierWrapper, QueryRequest, StdResult, Uint128,
-    WasmQuery, BankQuery, BalanceResponse, 
+    WasmQuery, BankQuery, BalanceResponse, Decimal, 
 };
 // use cw20::Balance;
 use mars_red_bank_types::{red_bank, red_bank::Market};
+use mars_red_bank::interest_rates::{calculate_applied_linear_interest_rate, compute_scaled_amount, compute_underlying_amount, ScalingOperation, get_underlying_debt_amount};
 
 #[cw_serde]
 pub struct RedBankBase<T>(T);
@@ -35,23 +36,6 @@ impl RedBankUnchecked {
 }
 
 impl RedBank {
-    pub fn query_debt(
-        &self,
-        querier: &QuerierWrapper,
-        user_address: &Addr,
-        denom: &str,
-    ) -> StdResult<Uint128> {
-        let response: red_bank::UserDebtResponse =
-            querier.query(&QueryRequest::Wasm(WasmQuery::Smart {
-                contract_addr: self.address().to_string(),
-                msg: to_binary(&red_bank::QueryMsg::UserDebt {
-                    user: user_address.to_string(),
-                    denom: denom.to_string(),
-                })?,
-            }))?;
-        Ok(response.amount)
-    }
-
     pub fn query_market(&self, querier: &QuerierWrapper, denom: &str) -> StdResult<Market> {
         querier.query_wasm_smart(
             self.address(),
@@ -61,6 +45,10 @@ impl RedBank {
         )
     }
 
+    // NOTE: This can be done by querying the total supply of mOsmo token
+    // Because it's made to track the total amount of Osmo in the red-bank
+    // But, the current implementation of the tokenized red-bank is under development.
+    // So, we use the bank query to get the total amount of Osmo in the red-bank for now.
     pub fn query_total_collateral_osmo_balance(&self, querier: &QuerierWrapper, denom: &str) -> StdResult<Uint128> {
         let bank_query = BankQuery::Balance {
             address: self.address().into(),
