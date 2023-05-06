@@ -15,7 +15,11 @@ pub fn execute_bond(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     // TODO: Query the utilization ratio of the Osmo in Mars red-bank
+    // Check if the maximum amount of possible staking amount is not exceeded
     let utilization_ratio = current_osmo_utilization_rate(deps, env)?;
+
+    // TODO: Check if the mOsmo of the depositor is free from the collateralization of the 
+    // the debt. If it's the case, then return the error
 
 
     Ok(Response::default())

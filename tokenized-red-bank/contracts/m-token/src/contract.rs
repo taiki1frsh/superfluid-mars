@@ -143,6 +143,8 @@ pub fn execute(
         // ExecuteMsg::TransferOnLiquidation{ recipient, amount } => {
         //     transfer_on_liquidation(deps, env, info, recipient, amount)
         // }
+        // ExecuteMsg::IncreaseUnusableAmount{ addr, amount }
+        // ExecuteMsg::DecreaseUnusableAmount{ addr, amount }
     }
 }
 
