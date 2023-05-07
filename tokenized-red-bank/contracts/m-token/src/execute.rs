@@ -31,13 +31,14 @@ pub fn transfer(
     recipient: String,
     amount: Uint128,
 ) -> Result<Response, ContractError> {
+    // TODO: Validate if the free token amount is enough to cover the transfer amount
+    // based on UnusableAmount
 
     // return after the execute_transfe call
     Ok(execute_transfer(deps, env, info, recipient, amount)?)
 }
 
 // TODO: Insert the validation logic to check if buner address is the owner of Mars.
-
 pub fn burn(
     deps: DepsMut,
     env: Env,
@@ -56,6 +57,7 @@ pub fn mint(
     recipient: String,
     amount: Uint128,
 ) -> Result<Response, ContractError> {
+    
 
     // return after the execute_mint call
     Ok(execute_mint(deps, env, info, recipient, amount)?)
@@ -69,6 +71,8 @@ pub fn send(
     amount: Uint128,
     msg: Binary,
 ) -> Result<Response, ContractError> {
+    // TODO: Validate if the free token amount is enough to cover the transfer amount
+    // based on UnusableAmount
 
     // return after the execute_send call
     Ok(execute_send(deps, _env, info, contract, amount, msg)?)
@@ -82,6 +86,8 @@ pub fn increase_allowance(
     amount: Uint128,
     expires: Option<Expiration>,
 ) -> Result<Response, ContractError> {
+    // TODO: Validate if the free token amount is enough to cover the transfer amount
+    // based on UnusableAmount
 
     // return after the execute_increase_allowance call
     Ok(execute_increase_allowance(deps, env, info, spender, amount, expires)?)
@@ -108,6 +114,8 @@ pub fn transfer_from(
     recipient: String,
     amount: Uint128,
 ) -> Result<Response, ContractError> {
+    // TODO: Validate if the free token amount is enough to cover the transfer amount
+    // based on UnusableAmount
 
     // return after the execute_transfer_from call
     Ok(execute_transfer_from(deps, env, info, owner, recipient, amount)?)
@@ -134,6 +142,8 @@ pub fn send_from(
     amount: Uint128,
     msg: Binary,
 ) -> Result<Response, ContractError> {
+    // TODO: Validate if the free token amount is enough to cover the transfer amount
+    // based on UnusableAmount
 
     // return after the execute_send_from call
     Ok(execute_send_from(deps, _env, info, owner, contract, amount, msg)?)

@@ -1,0 +1,64 @@
+syntax = "proto3";
+package osmosis.superfluidmosmo;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/osmosis-labs/osmosis/v15/x/superfluid-mosmo/types";
+
+// Msg defines the Msg service.
+service Msg {
+    // Execute superfluid delegation for a lockup
+  rpc SuperfluidmOsmoDelegate(MsgSuperfluidmOsmoDelegate)
+      returns (MsgSuperfluidmOsmoDelegateResponse);
+
+  // Execute superfluid undelegation for a lockup
+  rpc SuperfluidmOsmoUndelegate(MsgSuperfluidmOsmoUndelegate)
+      returns (MsgSuperfluidmOsmoUndelegateResponse);
+
+  rpc Rebalance(MsgRebalance)
+      returns (MsgRebalanceResponse);
+}
+
+// MsgSuperfluidmOsmoDelegate defines a message to delegate superfluid tokens
+message MsgSuperfluidmOsmoDelegate {
+  string sender = 1 [ (gogoproto.moretags) = "yaml:\"sender\"" ];
+  string validator_address = 2;
+  string amount = 3 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSuperfluidmOsmoDelegateResponse defines the Msg/Delegate response type
+message MsgSuperfluidmOsmoDelegateResponse {
+}
+
+// MsgSuperfluidmOsmoUndelegate defines a message to undelegate superfluid tokens
+message MsgSuperfluidmOsmoUndelegate {
+  string sender = 1 [ (gogoproto.moretags) = "yaml:\"sender\"" ];
+  string amount = 2 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSuperfluidmOsmoUndelegateResponse defines the Msg/Undelegate response type
+message MsgSuperfluidmOsmoUndelegateResponse {
+}
+
+// MsgReBalance defines a message to rebalance superfluid tokens
+message MsgRebalance {
+  string sender = 1 [ (gogoproto.moretags) = "yaml:\"sender\"" ];
+  string rebalance_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"rebalance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgReBalanceResponse defines the Msg/Rebalance response type
+message MsgRebalanceResponse {
+}

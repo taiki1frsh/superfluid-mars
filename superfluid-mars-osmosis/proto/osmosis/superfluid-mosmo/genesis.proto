@@ -1,0 +1,15 @@
+syntax = "proto3";
+package osmosis.superfluidmosmo;
+
+import "gogoproto/gogo.proto";
+
+import "osmosis/superfluid-mosmo/params.proto";
+import "osmosis/superfluid-mosmo/superfluid_mosmo.proto";
+
+option go_package = "github.com/osmosis-labs/osmosis/v15/x/superfluid-mosmo/types";
+
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated SuperfluidmOsmoIntermediaryAccount superfluid_mosmo_intermediary_accounts = 2;
+  repeated SuperfluidmOsmoDelegationRecord superfluid_mosmo_delegation_records = 3;
+}

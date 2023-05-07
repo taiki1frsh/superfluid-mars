@@ -1,10 +1,12 @@
 # Osmosis Superfluid Staking **on Mars**
 
 Make $OSMO that is deposited on Mars stakable via Superfluid Staking by leveraging super flexible design capacity of CosmWasm and Cosmos SDK.
+(And beyond, to other lending protocols on Osmosis)
 
 ## Concept
 
 The simplest way to describe the goal is to **enable **deposited OSMO **on** Mars to** be** staked.****
+
 
 Looking back at the revolutionary idea of Superfluid Staking as an App Chain, it was quite simple at its core, seeing the potential liquidity that exists locked on-chain but is not being used efficiently as a kind of staking state. In the case of Osmosis, this was $OSMO that was provided as liquidity in constant product AMM pools. 　　
 As time passed, the Osmosis ecosystem diversified, and so did the ways of providing liquidity. A prime example of this is the Mars Protocol.
@@ -12,6 +14,8 @@ As time passed, the Osmosis ecosystem diversified, and so did the ways of provid
 In Mars Protocol, there are always more than a certain amount of $OSMO tokens being lent but not used as collateral. This is due to the actions of users who aim to earn interest through lending, as well as the actions of passive borrowers who only borrow a small number of tokens against their collateral.
 
 The nature of these tokens is very similar to that of $OSMO, which is provided as liquidity in constant product AMM pools but is practically unexchangeable due to being in a price range where no trades can occur. Based on this, I believe that it is possible and beneficial to create a staking state for some of the $OSMO collateral in the Mars Protocol through a mechanism similar to Superfluid Staking.
+
+But, beyond that, this attempt is not limited to the Mars Protocol. The goal is to create a mechanism that can be applied to any lending protocol on Osmosis. In other words, it is a mechanism that can be applied to any token that is provided as collateral in a lending protocol on Osmosis.
 
 ## Core Designs
 

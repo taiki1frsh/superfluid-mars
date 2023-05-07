@@ -1,0 +1,13 @@
+syntax = "proto3";
+package osmosis.superfluidmosmo;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/osmosis-labs/osmosis/v15/x/superfluid-mosmo/types";
+
+message Params {
+  string rebalancer = 1 [
+    (gogoproto.moretags) = "yaml:\"rebalancer\"",
+    (gogoproto.nullable) = false
+  ];
+}

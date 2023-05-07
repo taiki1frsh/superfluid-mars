@@ -145,6 +145,7 @@ pub fn execute(
         // }
         // ExecuteMsg::IncreaseUnusableAmount{ addr, amount }
         // ExecuteMsg::DecreaseUnusableAmount{ addr, amount }
+        // ExecuteMsg::BurnOnSlashing{ addr, amount }
     }
 }
 
