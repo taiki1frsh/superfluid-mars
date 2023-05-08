@@ -74,6 +74,8 @@ In the first stage, additional staking is no longer allowed. Then, if the allowa
 
 #### Claim the staking reward
 
+The detailed logic for reward distribution is controlled and executed in the x/superfluid-mosmo module. This is to maintain consistency with the existing x/superfluid module and to integrate and handle a certain type of debt token as a Superfluid bondToken standard in a generic way. Furthermore, since Staking, Slashing, and Bonding are all managed within the module, it is more concise and secure to manage the fine-grained control of reward distribution within the module as well.
+
 - Determine the reward distribution ratio according to the locked mOSMO balance of each Superfluid mOsmo participant.
 - This needs to be done by the contract.
 - Since the amount of rewards varies for each delegating validator, it is necessary to determine the ratio according to each reward amount.
@@ -103,7 +105,13 @@ Its features include:
 
 TODO: fill up here
 
+SuperfluidmOsmoDelegate
+SuperfluidmOsmoUndelegate
 RebalanceMsg
+
+報酬の管理について
+SuperfluidmOsmoDelegate
+
 
 ### Superfluid mOSMO Contract
 
