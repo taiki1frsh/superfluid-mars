@@ -86,6 +86,8 @@ The detailed logic for reward distribution is controlled and executed in the x/s
 
 To enable the staking of unused OSMO collateral through Superfluid, I would like to first propose the tokenization of the lending functionality. This can be easily imagined with the precedents set by Aave, Compound, and others. In simple terms, it involves the issuance of synthetic tokens representing collateral amounts and synthetic tokens representing debt, in order to express interest rates and borrowing conditions through these tokens. In this implementation, we will consider only the implementation of collateral tokens, which are particularly related to Superfluid Staking (though we are aware of the interactions with debt tokens, they will not be implemented in this case).
 
+[Tokenized Red-Bank](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/tokenized-red-bank/contracts/red-bank/README.md)
+
 ### mToken
 
 Introduce mToken as a collateral token for Mars Protocol. This corresponds 1:1 with tokens deposited in Red-Bank, and the total issuance of mTokens is equal to the total amount of tokens deposited in Red-Bank.   
@@ -101,6 +103,8 @@ Its features include:
 - Collateral redemption can only be performed by the mToken holder at the time of redemption, regardless of the original mToken issuer
 - mToken can be basically transferred freely, and can also be controlled by contracts through Allowance as normal CW20
 
+[mToken Contract](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/tokenized-red-bank/contracts/m-token/README.md)
+
 ### Superfluid mOSMO Module
 
 TODO: fill up here
@@ -110,8 +114,8 @@ SuperfluidmOsmoUndelegate
 RebalanceMsg
 
 報酬の管理について
-SuperfluidmOsmoDelegate
 
+[x/superfluid-mosmo module](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/superfluid-mosmo-osmosis-custom/x/superfluid-mosmo/README.md)
 
 ### Superfluid mOSMO Contract
 
@@ -122,3 +126,5 @@ It is not possible and should be avoided to introduce all unused mOSMO into Supe
 Therefore, it is desirable to introduce a certain proportion of the unused mOSMO into Superfluid Staking. This proportion is managed and updated as Config data held by this contract. The distribution of staking rewards is maintained according to the locked mOSMO amount associated with each address managed by this contract. Distribution occurs only through data during Epochs, either by releasing it through a Claim Msg or by actually sending tokens.
 
 Unbonding is realized by releasing the UnusableAmount of mOSMO after a period similar to the normal OSMO unbonding period.
+
+[Superfluid-mOsmo-Staking Contract](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/superfluid-mosmo-staking/README.md)
