@@ -89,6 +89,12 @@ The detailed logic for reward distribution is controlled and executed in the x/s
 - This needs to be done by the contract.
 - Since the amount of rewards varies for each delegating validator, it is necessary to determine the ratio according to each reward amount.
 
+### Tokenization of the lending functionalities
+
+By tokenizing the lending protocol, external integration with the lending market's state becomes significantly easier, and by utilizing the flexible design of tokens, it becomes possible to provide composability with external markets for collateral, debt, interest, and other financial aspects. As a result, a more efficient lending protocol can be realized.
+
+This time, we particularly want to enable staking of some idle collateral assets through the tokenization of collateral.
+
 ## Technical Design
 
 ### Tokenized Red-Bank
