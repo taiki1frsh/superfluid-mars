@@ -8,8 +8,7 @@ Make $OSMO that is deposited on Mars stakable via Superfluid Staking by leveragi
 The simplest way to describe the goal is to **enable **deposited OSMO **on** Mars to** be** staked.
 
 
-Looking back at the revolutionary idea of Superfluid Staking as an App Chain, it was quite simple at its core, seeing the potential liquidity that exists locked on-chain but is not being used efficiently as a kind of staking state. In the case of Osmosis, this was $OSMO that was provided as liquidity in constant product AMM pools. 　　
-As time passed, the Osmosis ecosystem diversified, and so did the ways of providing liquidity. A prime example of this is the Mars Protocol.
+Looking back at the revolutionary idea of Superfluid Staking as an App Chain, it was quite simple at its core, seeing the potential liquidity that exists locked on-chain but is not being used efficiently as a kind of staking state. In the case of Osmosis, this was $OSMO that was provided as liquidity in constant product AMM pools. As time passed, the Osmosis ecosystem diversified, and so did the ways of providing liquidity. A prime example of this is the Mars Protocol.
 
 In Mars Protocol, there are always more than a certain amount of $OSMO tokens being lent but not used as collateral. This is due to the actions of users who aim to earn interest through lending, as well as the actions of passive borrowers who only borrow a small number of tokens against their collateral.
 
@@ -117,13 +116,18 @@ Its features include:
 
 ### Superfluid mOSMO Module
 
-TODO: fill up here
+We will introduce `x/superfluid-mosmo` as a module in the Osmosis chain. However, the original intention is to integrate it as a module of `x/superfluid`, and instead of implementing specific features for mOSMO, we aim to provide a versatile implementation targeting certain debt tokens like mOSMO. In order to properly achieve this, a deep understanding of the `x/superfluid` module and a thorough comprehension of all the necessary features for staking debt tokens are required. Therefore, at this point, we decided to implement it as a separate module rather than blindly integrating it.
 
-SuperfluidmOsmoDelegate
-SuperfluidmOsmoUndelegate
-RebalanceMsg
+Primarily, this module is responsible for handling the information management and processing execution that the `x/superfluid` module takes care of. This is because the management of states related to the underlying debt tokens is maintained by the contract, making it unsuitable for controlling such information management in the module.
 
-報酬の管理について
+Therefore, the specific functions that this module will handle are as follows:
+
+- Store the staking address, amount, and specified Validator through a message (Msg)
+- (It is still undecided whether or not to pass the LockId at this time)
+- Associate that information with the Intermediary account created for each Validator address
+- Stake the newly issued OSMO through the Intermediary account
+- The distribution of rewards should be carried out in each Epoch in a similar manner to `x/superfluid` (ideally, it should be aligned as closely as possible to this method)
+- When the Rebalance Msg is called, un-stake and burn the necessary amount of OSMO based on each participant's share.
 
 [x/superfluid-mosmo module](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/superfluid-mosmo-osmosis-custom/x/superfluid-mosmo/README.md)
 
@@ -138,3 +142,7 @@ Therefore, it is desirable to introduce a certain proportion of the unused mOSMO
 Unbonding is realized by releasing the UnusableAmount of mOSMO after a period similar to the normal OSMO unbonding period.
 
 [Superfluid-mOsmo-Staking Contract](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/superfluid-mosmo-staking/README.md)
+
+### osmosis-rust
+
+[customized osmosis-rust](https://github.com/taiki1frsh/superfluid-osmo-on-tokenized-mars/blob/main/custom-osmosis-rust/README.md)

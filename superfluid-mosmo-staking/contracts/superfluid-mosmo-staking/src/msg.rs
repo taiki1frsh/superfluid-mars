@@ -27,6 +27,9 @@ pub enum ExecuteMsg {
     /// after the chain-defined waiting period (eg. 3 weeks)
     Claim {},
 
+    // TODO: Add WithdrawReward msg to enable users to withdraw their staking rewards
+    // WithdrawReward {},
+
     // Reinvest will check for all accumulated rewards, withdraw them, and
     // re-bond them to the same validator. Anyone can call this, which updates
     // the value of the token (how much under custody).
