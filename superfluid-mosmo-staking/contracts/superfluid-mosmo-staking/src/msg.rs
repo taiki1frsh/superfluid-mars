@@ -12,7 +12,7 @@ pub struct InstantiateMsg {
     /// The Mars Protocol money market contract
     pub red_bank: RedBankUnchecked,
     // The ratio that decides how much the unused collateral can be staked
-    pub staking_collateral_ratio: u8,
+    pub staking_collateral_ratio: Decimal,
 }
 
 #[cw_serde]

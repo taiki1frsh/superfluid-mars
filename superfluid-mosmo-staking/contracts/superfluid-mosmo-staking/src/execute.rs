@@ -6,21 +6,38 @@ use cosmwasm_std::{
 use mars_red_bank::interest_rates::get_underlying_debt_amount;
 
 use crate::error::ContractError;
-use crate::state::{Config, CONFIG};
-use crate::adapter::red_bank::{RedBank, RedBankUnchecked};
+use crate::state::{Config, CONFIG, STAKING_STATE};
+use crate::adapter::red_bank::RedBank;
 
 pub fn execute_bond(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
+    amount: Uint128,
 ) -> Result<Response, ContractError> {
-    // TODO: Query the utilization ratio of the Osmo in Mars red-bank
-    // Check if the maximum amount of possible staking amount is not exceeded
-    let utilization_ratio = current_osmo_utilization_rate(deps, env)?;
-
     // TODO: Check if the mOsmo of the depositor is free from the collateralization of the 
     // the debt. If it's the case, then return the error
 
+    // Check if the maximum amount of possible staking amount is not exceeded
+    // We set the maximum stakable amount as follows:
+    // total_collateral_amount * (1 - utilization_ratio - config.staking_collateral_ratio)
+    let utilization_ratio = current_osmo_utilization_rate(&deps, env)?;
+    let config = CONFIG.load(deps.storage)?;
+    let red_bank = config.clone().red_bank;
+    let total_collateral_supply = red_bank.query_total_collateral_osmo_balance(&deps.querier, &config.osmo_token_denom)?;
+
+    let staking_state = STAKING_STATE.load(deps.storage)?;
+    let stakable_ratio = stakable_ratio(utilization_ratio, config.staking_collateral_ratio)?;
+    
+    let updated_staking_amount = staking_state.total_staked_osmo.checked_add(amount).unwrap();
+    if !stakable_ratio.lt(&Decimal::zero()) && updated_staking_amount >= total_collateral_supply.checked_mul(utilization_ratio.to_uint_floor()).unwrap() {
+        return Err(ContractError::OverLimitation {  })
+    }
+
+    // TODO: Execute IncreaseUnusableAmount for mOSMO token of the info.sender
+    // To lockup the collateral of OSMO in state
+
+    // TODO: Execute the MsgSuperfluidmOsmoStaking
 
     Ok(Response::default())
 }
@@ -45,7 +62,7 @@ pub fn execute_claim(
 // Returns the current utilization rate of the osmo token in red-bank
 // between 0 and 1 in Decimal type
 pub fn current_osmo_utilization_rate(
-    deps: DepsMut,
+    deps: &DepsMut,
     env: Env,
 ) -> Result<Decimal, ContractError> {
     let config = CONFIG.load(deps.storage)?;
@@ -84,3 +101,14 @@ pub fn current_osmo_total_debt(
     
     Ok(total_debt_amount)
 }
+
+// Return the ratio between 0 to 1 as the stakable ratio in the total collateral
+pub fn stakable_ratio(
+    utilization_ratio: Decimal,
+    staking_collateral_ratio: Decimal,
+) -> Result<Decimal, ContractError> {
+    let unused_ratio = Decimal::one().checked_sub(utilization_ratio).map_err(|err| StdError::Overflow { source: err })?;
+    unused_ratio.checked_sub(staking_collateral_ratio)
+        .map_err(|err| ContractError::Std(StdError::Overflow { source: err }))
+}
+

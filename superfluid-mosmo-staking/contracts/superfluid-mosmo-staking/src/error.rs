@@ -44,4 +44,7 @@ pub enum ContractError {
 
     #[error("No allowance for this account")]
     NoAllowance {},
+
+    #[error("Over limitation of the maximum staking amount")]
+    OverLimitation {},
 }
