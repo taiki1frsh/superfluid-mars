@@ -34,7 +34,7 @@ pub fn execute_bond(
         return Err(ContractError::OverLimitation {  })
     }
 
-    // TODO: Execute IncreaseUnusableAmount for mOSMO token of the info.sender
+    // TODO: Execute IncreaseUnusableAmount msg of the mOsmo contract for mOSMO token of the info.sender
     // To lockup the collateral of OSMO in state
 
     // TODO: Execute the MsgSuperfluidmOsmoStaking
