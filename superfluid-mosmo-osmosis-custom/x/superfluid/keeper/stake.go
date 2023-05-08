@@ -432,6 +432,7 @@ func (k Keeper) alreadySuperfluidStaking(ctx sdk.Context, lockID uint64) bool {
 	return len(synthLocks) > 0
 }
 
+// tbbt by tf
 // mintOsmoTokensAndDelegate mints osmoAmount of OSMO tokens, and immediately delegate them to validator on behalf of intermediary account.
 func (k Keeper) mintOsmoTokensAndDelegate(ctx sdk.Context, osmoAmount sdk.Int, intermediaryAccount types.SuperfluidIntermediaryAccount) error {
 	validator, err := k.validateValAddrForDelegate(ctx, intermediaryAccount.ValAddr)

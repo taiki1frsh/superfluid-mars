@@ -38,4 +38,4 @@ Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
 done
 
 cp -r ./github.com/osmosis-labs/osmosis/* ./
-rm -rf ./github.com
+# rm -rf ./github.com

@@ -2,7 +2,6 @@ package types
 
 import (
 	fmt "fmt"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -40,31 +39,20 @@ func (p Params) Validate() error {
 // Implements params.ParamSet.
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyMinimumRiskFactor, &p.MinimumRiskFactor, ValidateMinimumRiskFactor),
+		paramtypes.NewParamSetPair(KeyRebalancer, &p.Rebalancer, ValidateRebalancer),
 	}
 }
 
-func ValidateMinimumRiskFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+func ValidateRebalancer(i interface{}) error {
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.LT(sdk.ZeroDec()) || v.GT(sdk.NewDec(100)) {
-		return fmt.Errorf("minimum risk factor should be between 0 - 100: %s", v.String())
-	}
-
-	return nil
-}
-
-func ValidateUnbondingDuration(i interface{}) error {
-	v, ok := i.(time.Duration)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v == 0 {
-		return fmt.Errorf("unbonding duration should be positive: %s", v.String())
+	// check if the string can be converted to sdk.AccAddress
+	_, err := sdk.AccAddressFromBech32(v)
+	if err != nil {
+		return fmt.Errorf("invalid rebalancer address: %s", v)
 	}
 
 	return nil
