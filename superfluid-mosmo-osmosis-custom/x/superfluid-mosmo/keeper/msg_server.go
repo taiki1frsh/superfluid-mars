@@ -22,12 +22,13 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (server msgServer) SuperfluidmOsmoDelegate(goCtx context.Context, msg *types.MsgSuperfluidmOsmoDelegate) (*types.MsgSuperfluidmOsmoDelegateResponse, error) {
-	_ = sdk.UnwrapSDKContext(goCtx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// err := server.keeper.SuperfluidmOsmoDelegate(ctx, msg.Sender, msg.ValidatorAddress, msg.Amount)
-	// if err == nil {
-	// 	events.EmitSuperfluidDelegateEvent(ctx, msg.LockId, msg.ValAddr)
-	// }
+	err := server.keeper.SuperfluidmOsmoDelegate(ctx, msg.Sender, msg.ValidatorAddress, msg.Amount)
+	if err != nil {
+		return &types.MsgSuperfluidmOsmoDelegateResponse{}, err
+	}
+
 	return &types.MsgSuperfluidmOsmoDelegateResponse{}, nil
 }
 

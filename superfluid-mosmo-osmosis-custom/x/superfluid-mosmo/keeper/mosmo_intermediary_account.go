@@ -64,7 +64,7 @@ func (k Keeper) GetmOsmoIntermediaryAccountsForVal(ctx sdk.Context, valAddr sdk.
 	return valAccs
 }
 
-func (k Keeper) GetOrCreateIntermediaryAccount(ctx sdk.Context, denom, valAddr string) (types.SuperfluidIntermediaryAccount, error) {
+func (k Keeper) GetOrCreateIntermediaryAccount(ctx sdk.Context, denom, valAddr string) (types.SuperfluidmOsmoIntermediaryAccount, error) {
 	accountAddr := types.GetSuperfluidmOsmoIntermediaryAccountAddr(denom, valAddr)
 	storeAccount := k.GetmOsmoIntermediaryAccount(ctx, accountAddr)
 	// if storeAccount is in state, we return it.
