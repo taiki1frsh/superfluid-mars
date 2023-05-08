@@ -13,7 +13,7 @@ use cw_utils::Expiration;
 
 use cw20_base::allowances::{
     execute_burn_from, execute_decrease_allowance, execute_increase_allowance, execute_send_from,
-    execute_transfer_from, query_allowance,
+    execute_transfer_from,
 };
 use cw20_base::contract::{
     execute_burn, execute_mint, execute_send, execute_transfer, query_balance, query_token_info,
@@ -45,6 +45,7 @@ pub fn burn(
     info: MessageInfo,
     amount: Uint128,
 ) -> Result<Response, ContractError> {
+    
 
     // return after the execute_burn call
     Ok(execute_burn(deps, env, info, amount)?)

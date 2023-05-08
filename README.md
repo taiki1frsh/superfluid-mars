@@ -5,7 +5,7 @@ Make $OSMO that is deposited on Mars stakable via Superfluid Staking by leveragi
 
 ## Concept
 
-The simplest way to describe the goal is to **enable **deposited OSMO **on** Mars to** be** staked.****
+The simplest way to describe the goal is to **enable **deposited OSMO **on** Mars to** be** staked.
 
 
 Looking back at the revolutionary idea of Superfluid Staking as an App Chain, it was quite simple at its core, seeing the potential liquidity that exists locked on-chain but is not being used efficiently as a kind of staking state. In the case of Osmosis, this was $OSMO that was provided as liquidity in constant product AMM pools. 　　
@@ -16,6 +16,16 @@ In Mars Protocol, there are always more than a certain amount of $OSMO tokens be
 The nature of these tokens is very similar to that of $OSMO, which is provided as liquidity in constant product AMM pools but is practically unexchangeable due to being in a price range where no trades can occur. Based on this, I believe that it is possible and beneficial to create a staking state for some of the $OSMO collateral in the Mars Protocol through a mechanism similar to Superfluid Staking.
 
 But, beyond that, this attempt is not limited to the Mars Protocol. The goal is to create a mechanism that can be applied to any lending protocol on Osmosis. In other words, it is a mechanism that can be applied to any token that is provided as collateral in a lending protocol on Osmosis.
+
+### User flow
+
+1. Deposit $OSMO to Mars Red-Bank
+1. Get mOSMO, wihtout borrowing any tokens
+1. Send tx contain `Bond` msg of the `superfluid-msomo` contract to stake OSMO using unutilized mOSMO (OSMO collateral on Red-Bank)
+1. The amount of mOSMO which you staked is freezed and you can't use it for borrowing and transfer it
+1. Send tx contains `ClaimReward` to claim the reward of staking (this can be changed to the automatic distribution)
+1. Send tx contains `Unbond` to exit staking 
+1. After the unbonding period, you can get your mOSMO back by sending tx contains `Claim` msg
 
 ## Core Designs
 
