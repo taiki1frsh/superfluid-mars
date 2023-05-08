@@ -19,16 +19,16 @@ func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
-func NewParams(Rebalancer ) Params {
+func NewParams(rebalancer string) Params {
 	return Params{
-		MinimumRiskFactor: minimumRiskFactor,
+		Rebalancer: rebalancer,
 	}
 }
 
 // default minting module parameters.
 func DefaultParams() Params {
 	return Params{
-		MinimumRiskFactor: defaultMinimumRiskFactor, // 5%
+		Rebalancer: defaultRebalancer,
 	}
 }
 
