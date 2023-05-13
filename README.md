@@ -1,5 +1,7 @@
 # Osmosis Superfluid Staking **on Tokenized Mars**
 
+****This is just POC content****
+
 Make $OSMO that is deposited on Mars stakable via Superfluid Staking by leveraging super flexible design capacity of CosmWasm and Cosmos SDK.
 (And beyond, to other lending protocols on Osmosis)
 
